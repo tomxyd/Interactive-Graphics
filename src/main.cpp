@@ -110,13 +110,23 @@ void init() {
 
 void display(const Shader& shader) {
 
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0.f,0.f,0.f,1.f);
-    if (readyToDraw)
-    {
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+    glClearColor(0.f, 0.f, 0.f, 1.f);
+
+    float const PI = 22 / 7;
+    const float DegreesToRadians = PI / 180.f;
+    float angle = 0.001 * DegreesToRadians;
+
+    for (int i = 0; i < 3; ++i) {
+        float x = std::cos(angle) * points[i].x - std::sin(angle) * points[i].y;
+        float y = std::sin(angle) * points[i].x + std::cos(angle) * points[i].y;
+        points[i].x = x;
+        points[i].y = y;
     }
+    glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
